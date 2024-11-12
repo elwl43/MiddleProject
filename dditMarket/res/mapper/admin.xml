@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="admin">
+
+	<select id="loginChk" parameterType="map" resultType="String">
+  		SELECT admin_id
+  			FROM administer
+		WHERE admin_id = #{uId} 
+		AND admin_pw = #{uPw}
+  	</select>
+  	
+  	<select id="getAdmin" resultType="kr.or.ddit.admin.vo.AdminVO">
+		select admin_id, admin_pw
+		from administer
+		where admin_id = #{uId}
+	</select>
+	
+</mapper>

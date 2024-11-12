@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="member">
+
+	<insert id="joinMem" parameterType="kr.or.ddit.member.vo.MemberVO">
+		insert into member (
+		mem_no, mem_id, mem_pw, mem_nm, mem_regno1, mem_regno2,
+		loc, mem_detail_addr, mem_detail_addr2, mem_tel, mem_mail
+		) values (
+		mem_seq.nextval, #{mem_id}, #{mem_pw}, #{mem_nm}, #{mem_regno1}, #{mem_regno2},
+		substr(#{loc},1,2), #{mem_detail_addr}, #{mem_detail_addr2}, #{mem_tel},#{mem_mail}
+		)
+	</insert>
+
+	<select id="loginChk" parameterType="map" resultType="String">
+		SELECT MEM_ID
+		FROM MEMBER
+		WHERE MEM_ID = #{uId}
+		AND MEM_PW = #{uPw}
+		AND MEM_DY = 'N'
+		AND MEM_NO NOT IN (SELECT MEM_NO
+		FROM BLACKLIST)
+	</select>
+
+	<select id="getMember" resultType="kr.or.ddit.member.vo.MemberVO">
+		select mem_no, mem_id, mem_pw, mem_nm, mem_regno1, mem_regno2,mem_rank,
+		loc, mem_detail_addr, mem_detail_addr2, mem_tel, mem_mail, mem_dy
+		from member
+		where mem_id = #{memId}
+	</select>
+
+	<select id="findMember" parameterType="map" resultType="String">
+		SELECT MEM_ID
+		FROM MEMBER
+		WHERE MEM_NM = #{mem_nm}
+		AND MEM_REGNO1 = #{mem_regno1}
+	</select>
+
+	<select id="findEmail" parameterType="map" resultType="String">
+		SELECT MEM_MAIL
+		FROM MEMBER
+		WHERE MEM_ID = #{mem_id}
+		AND MEM_MAIL = #{mem_mail}
+	</select>
+
+	<update id="updatePw" parameterType="map">
+		UPDATE MEMBER
+		SET MEM_PW = #{mem_pw}
+		WHERE MEM_ID = #{mem_id} AND MEM_MAIL = #{mem_mail}
+	</update>
+
+	<update id="updateMember" parameterType="map">
+		UPDATE MEMBER
+		SET MEM_PW = #{mPw}, LOC = substr(#{mLoc},1,2), MEM_TEL = #{mTel}
+		, MEM_DETAIL_ADDR = #{mAddr}, MEM_DETAIL_ADDR2 = #{mAddr2}, MEM_MAIL = #{mMail}
+		WHERE MEM_ID = #{mId}
+	</update>
+
+	<update id="delMember" parameterType="kr.or.ddit.member.vo.MemberVO">
+		UPDATE MEMBER
+		SET MEM_DY = 'Y'
+		WHERE MEM_ID = #{mem_id} AND MEM_REGNO1 = #{mem_regno1}
+	</update>
+
+	<select id="memberBoard" resultType="kr.or.ddit.member.vo.MemberVO">
+		select rownum, mem_no, mem_id, mem_nm, mem_mail
+		from (select mem_no, mem_id, mem_nm, mem_mail
+		from member
+		order by mem_no)
+	</select>
+</mapper>
+ 

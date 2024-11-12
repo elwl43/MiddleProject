@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="qnaboard">
+
+
+	
+<!-- 전체 리스트 -->	
+<select id="qnaList" resultType="kr.or.ddit.questionboard.vo.QnaBoardVO">
+
+	SELECT QNA_NO as qnaNo, ADMIN_ID as adminId ,QNA_TITLE as qnaTitle, QNA_CONTENT as qnaContent, QNA_DY as qnaDy from qnaboard
+    WHERE QNA_DELYN='N' ORDER BY QNA_DY DESC
+
+</select>
+<!-- 등록하기 -->
+<insert id="insertQnaboard" parameterType="kr.or.ddit.questionboard.vo.QnaBoardVO">
+
+	
+     insert into qnaboard(qna_no,admin_id, qna_Title, qna_content)
+    values(qna_no_seq.nextval, 'admin',#{qnaTitle} ,#{qnaContent})
+</insert>
+
+
+
+</mapper>

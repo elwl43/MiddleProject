@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="review">
+
+	<!-- 전체 글 갯수 조회 -->
+	<select id="countReviewList" resultType="int">
+		SELECT COUNT(*) reviewCount FROM REVIEW
+	</select>
+
+	<select id="ReviewList" resultType="kr.or.ddit.review.vo.IReviewVO">
+		select *
+		from member m, review r, sale s
+		where m.mem_no=r.mem_NO
+		and s.sale_no=r.sale_no
+		and s.mem_no=#{mem_no}
+		and r.REV_DELYN='N'
+		order by r.rev_no desc
+	</select>
+
+	<select id="updateRvEx" parameterType="kr.or.ddit.review.vo.IReviewVO">
+		update sale
+		set rv_ex=1
+		where sale_no=#{sale_no}
+	</select>
+
+	<!-- 내 리뷰 전체 출력 -->
+	<select id="myReview" resultType="kr.or.ddit.review.vo.IReviewVO">
+		select *
+		from member m, review r, sale s
+		where m.mem_no=r.mem_NO
+		and s.sale_no=r.sale_no
+		and r.mem_no=#{mem_no}
+		and r.REV_DELYN='N'
+		order by r.rev_no desc
+	</select>
+
+	<select id="rvDetail" resultType="kr.or.ddit.review.vo.IReviewVO">
+		select *
+		from member m, review r, sale s
+		where m.mem_no=r.mem_NO
+		and s.sale_no=r.sale_no
+		and r.rev_no=#{rev_no}
+	</select>
+
+	<select id="rvmemNm" resultType="kr.or.ddit.review.vo.ReviewVO">
+		select m.mem_nm
+		from member m, review r
+		where m.mem_no=r.mem_no
+		and r.mem_no=#{mem_no}
+	</select>
+
+	<!-- 등록 -->
+	<insert id="InsertReview" parameterType="kr.or.ddit.review.vo.ReviewVO">
+		insert into review (REV_NO,
+		MEM_NO,
+		SALE_NO,
+		AT_FILE_ID,
+		REV_CONTENT)
+		values(#{rev_no},#{mem_no},#{sale_no},#{atchFileId},#{rev_content})
+	</insert>
+
+	<!-- 리뷰 수정 -->
+	<insert id="updateReview" parameterType="kr.or.ddit.review.vo.ReviewVO">
+		update review
+		<set>
+			<if test='at_file_id != null and at_file_id !=""'>
+				at_file_id=#{atchFileId},
+			</if>
+			<if test='rev_content != null and rev_content !=""'>
+				rev_content=#{rev_content}
+			</if>
+		</set>
+		where rev_no=#{rev_no}
+	</insert>
+</mapper>

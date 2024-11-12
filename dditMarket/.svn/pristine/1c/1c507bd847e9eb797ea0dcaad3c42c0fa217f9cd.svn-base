@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="notice">
+	<!-- 전체 글 갯수 조회 -->
+	
+	<!--전체 리스트  -->
+	<select id="countNoticeList" resultType="int">
+		SELECT COUNT(*) FROM NOTICE 
+		 WHERE NOT_DELYN='N'
+		<if test='notTitle !=null and notTitle !=""'> 
+		and not_Title like '%' || #{notTitle} || '%'
+	  </if>
+	  order by NOT_DY DESC
+	</select>
+	
+	<!-- 페이지 별 리스트 출력 -->
+	<select id="noticeList" resultType="kr.or.ddit.notice.vo.NoticeVO">
+		
+        SELECT NOT_NO as notNo, ADMIN_ID as adminId , NOT_TITLE as notTitle, NOT_CONTENT as notContent, NOT_DY as notDy from notice       
+         WHERE NOT_DELYN='N' 
+	 <if test='notTitle !=null and notTitle !=""'> 
+		and not_Title like '%' || #{notTitle} || '%'
+	  </if>
+	  order by NOT_DY DESC
+	</select>	
+
+	
+	<!--전체 리스트 -->
+	<!-- <select id="allNotice" resultMap="noticeMap"> 
+		select * from notice 
+		
+		</select> 
+		<resultMap type="noticeVO" id="noticeMap"> <result property="notNo" 
+		column="NOT_NO" /> <result property="adminId" column="ADMIN_ID" /> <result 
+		property="notTitle" column="NOT_TITLE" /> <result property="notContent" column="NOT_CONTENT" /> 
+		<result property="notDy" column="NOT_DY" /> 
+		</resultMap> -->
+
+	<!-- 등록하기 -->
+	<insert id="InsertNocice" parameterType="kr.or.ddit.notice.vo.NoticeVO">
+
+		insert into notice( not_no, admin_id, not_title, not_content)
+		values(not_no_seq.nextval, 'admin',#{notTitle},#{notContent})
+
+	</insert>
+	
+	
+	<!-- 상세보기 -->
+	<select id="detailNotice" resultType="kr.or.ddit.notice.vo.NoticeVO">
+	
+		select NOT_NO as notNo, ADMIN_ID as adminId, NOT_TITLE as notTitle , NOT_CONTENT as notContent,  NOT_DY as notDy
+		from notice where NOT_NO = #{notNo}
+
+	</select>
+	
+	
+	<!-- 수정하기 -->
+	<update id="updateNotice" parameterType="kr.or.ddit.notice.vo.NoticeVO">
+	
+	update notice set NOT_TITLE=#{notTitle} , NOT_CONTENT=#{notContent}
+	where NOT_NO=#{notNo}
+	
+	</update>
+
+	<!-- 삭제하기  -->
+	<delete id="deleteNotice" parameterType="int">
+	
+	UPDATE NOTICE SET NOT_DELYN= 'Y' WHERE NOT_NO=#{NOTNO}
+	
+	</delete>
+	
+</mapper>

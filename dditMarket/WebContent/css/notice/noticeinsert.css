@@ -1,0 +1,51 @@
+@charset "UTF-8";
+
+table {
+	margin: auto;
+}
+input[type="text"] {
+	border: 1.5px rgb(68, 136, 244) solid; /* 테두리색상 */
+	width: 900px;  					   /* 길이 */
+	height: 40px;						   /* 너비 */
+	border-radius: 5px;					   /* 테두리 둥글기 */
+	padding-left: 10px;					   /* 테두리안 글자 패딩영역  */
+}
+textarea {
+	border: 1.5px rgb(68, 136, 244) solid;
+	width: 900px;
+	height: 500px;
+	border-radius: 5px;
+	padding-left: 10px;
+	padding-top: 10px;
+	resize: none; /* 밑에 // 가리기 */
+}
+.header{
+	height: 50px;
+}
+input[type="submit"] {
+	width: 90px;
+	height: 40px;
+	font-size:15px;
+	border: 0px;
+/* 	outline: 1.5px rgb(68, 136, 244) solid; */
+	border-radius: 10px;
+	padding-left: 10px;
+	background-color: rgb(164, 199, 255);
+	
+}
+input[type="submit"]:active {
+    width: 90px;
+    height: 40px;
+    font-size: 18px;
+    border: 0;
+    border-radius: 5px;
+/*     outline: 1.5px rgb(27, 76, 155) solid; */
+    padding-left: 10px;
+    background-color: rgb(164, 199, 255);
+}
+.find-btn{
+	text-align: center;
+}
+.find-btn1{
+	display :inline-block;
+}

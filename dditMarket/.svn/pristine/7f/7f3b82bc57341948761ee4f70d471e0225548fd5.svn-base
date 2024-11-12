@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        /* 마켓제목 */
+     div.h1{
+        margin: 30px;
+        font-size: 30px;
+        font-weight: bold;
+    }
+    /* 검색창 */
+    .search{
+    border: 2px solid green;
+    font-size: 20px;
+    line-height: 30px; 
+    }
+    /* 검색버튼 */
+    .search-btn{
+        color: green;
+        background-color: white ;
+        padding: auto;
+        margin: 10px;
+        width: 40px;
+        height: 30px;
+        border: 1px solid;
+        display: flex;
+        font-size: 16px;
+        justify-content:  center;
+    }
+    .con{
+        mar
+    }
+    </style>
+</head>
+<!-- 카테고리 -->
+<div id="category-bar">
+    <button class="category-button">
+        <img class="inactive-img" src="." alt="beach-inactive icon">
+        <div></div>
+    </button>
+
+<body>
+    <div class="h1"> 🌱대덕마켓</div>   
+    <input class="search" type="text" placeholder="상품명,지역명" size="50">
+    <button class="search-btn" type="submit">
+    <i class="fa-solid fa-magnifying-glass"></i> 
+    </button>
+   
+    <div class="con">
+        <nav class="menu-box-1">
+          <ul>
+            <li>
+              <a href="#">menu1</a>
+              <ul>
+                <li><a href="#">text1</a></li>
+                <li><a href="#">text2</a></li>
+                <li><a href="#">text3</a></li>
+                <li><a href="#">text4</a></li>
+              </ul>
+            </li>
+            <li>
+                <a href="@">menu2</a>
+                <ul>
+                    <li><a href="#">text1</a></li>
+                    <li><a href="#">text2</a></li>
+                    <li><a href="#">text3</a></li>
+                    <li><a href="#">text4</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="@">menu3</a>
+                <ul>
+                    <li><a href="#">text1</a></li>
+                    <li><a href="#">text2</a></li>
+                    <li><a href="#">text3</a></li>
+                    <li><a href="#">text4</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="@">menu4</a>
+                <ul>
+                    <li><a href="#">text1</a></li>
+                    <li><a href="#">text2</a></li>
+                    <li><a href="#">text3</a></li>
+                    <li><a href="#">text4</a></li>
+                </ul>
+            </li>
+
+
+</body>
+</html>

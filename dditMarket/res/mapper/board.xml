@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="board">
+	<select id="sailnglist" resultType="kr.or.ddit.board.sailvo.SailBoardVO">
+		select PROD_PRICE, SALE_TITLE, SALE_NO, at_file_id
+		from sale
+		where
+		MEM_NO=#{mem_no}
+		and sale_state=1
+		and sale_delyn='N'
+	</select>
+
+	<select id="soldlist" resultType="kr.or.ddit.board.sailvo.SailBoardVO">
+		select PROD_PRICE, SALE_TITLE, SALE_NO, at_file_id
+		from sale
+		where
+		MEM_NO=#{mem_no}
+		and sale_state=2
+		and sale_delyn='N'
+	</select>
+
+	<select id="reviewChk" resultType="kr.or.ddit.board.sailvo.SailBoardVO">
+		select *
+		from SALE s, review r
+		where s.RV_EX=1
+		and s.sale_no=r.sale_no
+		and r.mem_no=#{mem_no}
+	</select>
+
+	<select id="buylist" resultType="kr.or.ddit.board.sailvo.SailBoardVO">
+		select *
+		from sale s,
+		payment p
+		where
+		s.sale_no=p.sale_no
+		and p.mem_no=#{mem_no}
+		and s.sale_delyn='N'
+		and s.rv_Ex=1
+	</select>
+
+	<select id="buylistNl" resultType="kr.or.ddit.board.sailvo.SailBoardVO">
+		select *
+		from sale s,
+		payment p
+		where
+		s.sale_no=p.sale_no
+		and s.sale_delyn='N'
+		and p.mem_no=#{mem_no}
+		and s.rv_Ex is null
+	</select>
+
+	<select id="wantedlist" resultType="kr.or.ddit.board.sailvo.SailBoardVO">
+		select s.prod_price, s.sale_title, s.sale_no, s.at_file_id
+		from sale s,
+		wanted w
+		where s.sale_no=w.sale_no
+		and w.mem_no=#{mem_no}
+	</select>
+
+	<select id="recentPage" resultType="kr.or.ddit.board.sailvo.SailBoardVO">
+		select s.prod_price, s.sale_title, s.sale_no, s.at_file_id
+		from RECENTPROD R, sale s
+		where r.mem_no=#{mem_no}
+		and r.sale_no=s.sale_no
+		<![CDATA[
+		and ROWNUM <= 4
+		]]>
+	</select>
+
+	<select id="boardCount" resultType="int">
+		select COUNT(*) boardCount
+		from SALE
+	</select>
+
+	<select id="rpCount" resultType="int">
+		select COUNT(*) rpCount
+		from RECENTPROD
+	</select>
+
+	<select id="checkWant" resultType="int">
+		select count(*)
+		from wanted
+		where sale_no=#{sale_no}
+		and mem_no=#{mem_no}
+	</select>
+
+	<select id="insertBoard" parameterType="kr.or.ddit.board.vo.BoardVO">
+		INSERT INTO SALE(sale_no, sale_title, prod_nm,
+		prod_price, prod_detail, at_file_id, prod_ctgy_id, mem_no, loc, trade, address1, address2)
+		VALUES
+		(#{sale_no}, #{sale_title}, #{prod_nm}, #{prod_price}, #{prod_detail},
+		#{at_file_id}, #{prod_ctgy_id}, #{mem_no}, #{loc}, #{trade}, #{address1}, #{address2})
+	</select>
+
+	<select id="updateRvEx" parameterType="kr.or.ddit.board.sailvo.SailBoardVO">
+		update sale
+		set rv_ex=1
+		where sale_no=#{sale_no}
+	</select>
+
+	<select id="saillist" resultType="kr.or.ddit.board.sailvo.SailBoardVO">
+		select PROD_PRICE as prod_price, SALE_TITLE as sale_title, SALE_NO as sale_no, AT_FILE_ID as at_file_id, MEM_NO as mem_no, LOC
+		from sale
+		where sale_state=1
+		<if test='sale_title !=null and sale_title !="" '>
+			and (sale_title like '%' || #{sale_title} || '%' or loc like '%' || #{sale_title} || '%')
+		</if>
+		<if test='prod_ctgy_id !=null and prod_ctgy_id != "" '>
+			and prod_ctgy_id like '%' || #{prod_ctgy_id} || '%'
+		</if>
+		and SALE_DELYN = 'N'
+		order by sale_no desc
+	</select>
+
+	<select id="saleDetail" resultType="kr.or.ddit.board.sailvo.SailBoardVO">
+		select SALE_NO,
+		SALE_TITLE,
+		PROD_NM,
+		PROD_PRICE,
+		PROD_DETAIL,
+		AT_FILE_ID,
+		PROD_CTGY_ID,
+		MEM_NO,
+		LOC,
+		SALE_DELYN,
+		TRADE,
+		ADDRESS1,
+		ADDRESS2
+		from sale
+		where
+		sale_no=#{sale_no}
+	</select>
+
+	<select id="saleMemNm" resultType="kr.or.ddit.board.sailvo.SailBoardVO">
+		select m.mem_nm
+		from member m, sale s
+		where m.mem_no=s.mem_no
+		and sale_no=#{sale_no}
+	</select>
+
+	<select id="salect" resultType="kr.or.ddit.board.sailvo.SailBoardVO">
+
+		select pc.PROD_CTGY_NM
+		from prod_categories pc, sale s
+		where pc.PROD_CTGY_ID=s.PROD_CTGY_ID
+		and sale_no=#{sale_no}
+
+	</select>
+
+	<select id="insertWant" resultType="kr.or.ddit.board.vo.BoardVO">
+		insert into wanted(SALE_NO, MEM_NO)
+		values(#{sale_no}, #{mem_no})
+	</select>
+
+	<select id="insertRtPage" resultType="kr.or.ddit.board.vo.BoardVO">
+		insert into RECENTPROD(SALE_NO, MEM_NO)
+		values(#{sale_no}, #{mem_no})
+	</select>
+
+	<select id="getWant" resultType="int">
+		select count(*)
+		from wanted
+		where sale_no = #{sale_no}
+	</select>
+
+	<select id="buySale" resultType="map">
+		insert into PAYMENT(SALE_NO, MEM_NO, TRADE_METHOD)
+		VALUES(#{sale_no},#{mem_no},#{trade_method})
+	</select>
+
+	<select id="buyUpdateSale" resultType="int">
+		UPDATE SALE
+		SET sale_state = 2
+		WHERE sale_no = #{sale_no}
+	</select>
+
+	<!-- 판매량 -->
+	<select id="saleCount" resultType="int">
+		select count(*) sailCount
+		from payment p, sale s
+		where p.sale_no=s.sale_no
+		and s.mem_no=#{mem_no}
+	</select>
+
+	<!-- 구매량 -->
+	<select id="buyCount" resultType="int">
+		select count(*)
+		from payment p, sale s
+		where p.sale_no=s.sale_no
+		and p.mem_no=#{mem_no}
+	</select>
+
+	<!-- 게시판 수정 -->
+	<select id="updateBoard" resultType="kr.or.ddit.board.vo.BoardVO">
+		update sale
+		<set>
+			<if test='sale_title != null and sale_title !=""'>
+				sale_title=#{sale_title},
+			</if>
+			<if test='prod_price != null and prod_price !=""'>
+				prod_price=#{prod_price},
+			</if>
+			<if test='trade != null and trade !=""'>
+				trade=#{trade},
+			</if>
+			<if test='address1 != null and address1 !=""'>
+				address1=#{address1},
+			</if>
+			<if test='address2 != null and address2 !=""'>
+				address2=#{address2},
+			</if>
+			<if test='prod_detail != null and prod_detail !=""'>
+				prod_detail=#{prod_detail},
+			</if>
+			<if test='at_file_id != null and at_file_id !=""'>
+				at_file_id=#{at_file_id}
+			</if>
+		</set>
+		where sale_no=#{sale_no}
+	</select>
+
+	<!-- 게시판 삭제 -->
+	<select id="deleteBoard" resultType="kr.or.ddit.board.vo.BoardVO">
+		update sale
+		set SALE_DELYN = 'Y'
+		where sale_no=#{sale_no}
+	</select>
+
+	<select id="buyPrice" resultType="int">
+		SELECT SUM(S.PROD_PRICE)
+		FROM PAYMENT P , SALE S
+		WHERE P.MEM_NO = #{mem_no} AND P.SALE_NO = S.SALE_NO
+	</select>
+
+	<select id="sellPrice" resultType="int">
+		SELECT SUM(PROD_PRICE)
+		FROM SALE
+		WHERE MEM_NO = #{mem_no} AND SALE_STATE=2
+	</select>
+
+	<!-- 찜 삭제 -->
+	<select id="deleteWant" resultType="kr.or.ddit.board.vo.BoardVO">
+		delete from wanted
+		where sale_no=#{sale_no}
+		and mem_no=#{mem_no}
+	</select>
+
+	<!-- 리뷰 여부 삭제 -->
+	<select id="deleteRvEx" resultType="kr.or.ddit.board.vo.BoardVO">
+		update sale
+		set rv_ex = null
+		where sale_no=#{sale_no}
+	</select>
+
+	<!-- 리뷰 삭제 -->
+	<select id="deleteReview" resultType="kr.or.ddit.board.vo.BoardVO">
+		update review
+		set rev_delyn='Y'
+		where sale_no=#{sale_no}
+	</select>
+</mapper>

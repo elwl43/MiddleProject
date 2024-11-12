@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+
+	<properties resource="db.properties" />
+	
+	<settings>
+		<!-- 데이터 등록시 해당 속성값이 존재하지 않으면 부적합한 열유형:1111 예외 발생 이 경우 해당 타입을 명시작으로 알려주면 
+			해결 가능 또는 NULL 값에 대해 특정 값 설정하기 -->
+		<setting name="jdbcTypeForNull" value="NULL" />
+	</settings>
+
+	<typeAliases>
+		<typeAlias type="kr.or.ddit.member.vo.MemberVO" alias="memVO" />
+		<typeAlias type="kr.or.ddit.complain.vo.BoardVO" alias="brdVO" />
+		<typeAlias type="kr.or.ddit.notice.vo.NoticeVO" alias="noticeVO" />
+		<typeAlias type="kr.or.ddit.admin.vo.AdminVO" alias="adminVO" />
+	</typeAliases>
+
+	<environments default="dev">
+		<environment id="dev">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="${driver}" />
+				<property name="url" value="${url}" />
+				<property name="username" value="${username}" />
+				<property name="password" value="${password}" />
+				<property name="poolMaximumActiveConnections" value="2" /> <!-- 활성화된 최대 커넥션 수 -->
+				<property name="poolMaximumIdleConnections" value="2" /> <!-- 유휴상태에서 최대 커넥션 수 -->
+			</dataSource>
+
+		</environment>
+
+	</environments>
+
+
+	<mappers>
+		<mapper resource="mapper/member.xml" />
+		<mapper resource="mapper/complainBoard.xml" />
+		<mapper resource="mapper/notice.xml" />
+		<mapper resource="mapper/review.xml" />
+		<mapper resource="mapper/board.xml" />
+		<mapper resource="mapper/atchFile.xml" />
+		<mapper resource="mapper/admin.xml" />
+		<mapper resource="mapper/qnaboard.xml"/>
+		<mapper resource="mapper/report.xml"/>
+	</mappers>
+
+</configuration>

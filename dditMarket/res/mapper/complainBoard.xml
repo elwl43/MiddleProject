@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="complainBoard">
+
+
+	<!-- 전체 글 갯수 조회 -->
+	<select id="countList"  parameterType="map" resultType="int">
+		SELECT COUNT(*) FROM COMPLAIN A
+		<where>
+		 
+        <if test="searchType == 'title'">
+            CMP_TITLE LIKE '%' || #{searchKeyword} || '%'
+        </if>
+        <if test="searchType == 'content'">
+            CMP_CONTENT LIKE '%' || #{searchKeyword} || '%'
+        </if>
+        <if test="searchType == 'writer'">
+            (SELECT MEM_NM FROM MEMBER WHERE MEM_NO = A.MEM_NO) LIKE '%' || #{searchKeyword} || '%'
+        </if>
+        </where>
+	</select>
+
+
+	<!-- 페이지 별 리스트 출력 -->
+	<select id="boardList" parameterType="map" resultType="brdVO">
+		select A.* from(
+		select ROWNUM AS RNUM, B.* from(
+		select CMP_NO, (SELECT MEM_NM FROM MEMBER WHERE MEM_NO = A.MEM_NO) CMP_WRITER, CMP_TITLE, CMP_DY, CMP_CONFIRM
+		from complain A
+		WHERE CMP_DELYN = 'N'
+		order by cmp_no DESC
+		)B
+		<![CDATA[
+		    where ROWNUM <= #{end}
+		)A
+		where A.rnum >= #{start}
+		]]>
+	</select>
+
+	<!-- 게시글 추가 -->
+	<insert id="InsertComplain" parameterType="kr.or.ddit.complain.vo.BoardVO">
+		insert into complain(cmp_no, mem_no, cmp_title, cmp_content, cmp_ctgy_id)
+		VALUES (COMPLAIN_NUM_SEQ.NEXTVAL, #{cmp_writer}, #{cmp_title}, #{cmp_content}, #{cmp_ctgy_id})
+	</insert>
+
+	<!-- 게시글 상세 조회 -->
+	<select id="detailList" parameterType="int" resultType="brdVO">
+		SELECT A.CMP_NO, (SELECT cmp_ctgy_nm FROM COM_CATE WHERE CMP_CTGY_ID = B.CMP_CTGY_ID) cmp_ctgy_nm,
+		CMP_DY, CMP_TITLE, (SELECT MEM_NM FROM MEMBER WHERE MEM_NO = A.MEM_NO) CMP_WRITER, CMP_CONTENT
+		FROM COMPLAIN A, COM_CATE B
+		WHERE A.CMP_NO = #{cmp_no} AND A.CMP_CTGY_ID = B.CMP_CTGY_ID
+	</select>
+	
+	<!-- 게시글 수정 -->
+	<update id="updateBoard" parameterType="kr.or.ddit.complain.vo.BoardVO">
+		update complain set cmp_title=#{cmp_title} , cmp_content=#{cmp_content}
+		where cmp_no=#{cmp_no}
+	</update>
+	
+	<!-- 게시글 삭제 -->
+	<update id="deleteBoard" parameterType="int">
+		update complain set cmp_delyn='Y'
+		where cmp_no=#{cmp_no}
+	</update>
+	
+	<!-- 게시글 검색 -->
+	<select id="searchBoardList" parameterType="map" resultType="brdVO">
+	    SELECT CMP_NO, (SELECT MEM_NM FROM MEMBER WHERE MEM_NO = A.MEM_NO) CMP_WRITER, 
+	           CMP_TITLE, CMP_DY, CMP_CONFIRM
+	    FROM complain A
+	    <where>
+        <if test="searchType == 'title'">
+            CMP_TITLE LIKE '%' || #{searchKeyword} || '%'
+        </if>
+        <if test="searchType == 'content'">
+            CMP_CONTENT LIKE '%' || #{searchKeyword} || '%'
+        </if>
+        <if test="searchType == 'writer'">
+            (SELECT MEM_NM FROM MEMBER WHERE MEM_NO = A.MEM_NO) LIKE '%' || #{searchKeyword} || '%'
+        </if>
+        </where>
+	    ORDER BY CMP_NO DESC
+	</select>
+ 
+ <!-- 처리내역 조회 -->
+	<select id="confirmList" parameterType="int" resultType="brdVO">
+		SELECT A.CMP_NO, (SELECT cmp_ctgy_nm FROM COM_CATE WHERE CMP_CTGY_ID = B.CMP_CTGY_ID) cmp_ctgy_nm,
+		CMP_DY, CMP_TITLE, CMP_CONFIRM
+		FROM COMPLAIN A, COM_CATE B
+		WHERE A.CMP_NO = #{cmp_no} AND A.CMP_CTGY_ID = B.CMP_CTGY_ID
+	</select>
+ </mapper>
+ 
